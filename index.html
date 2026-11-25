@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -9,14 +10,14 @@
 
     <style>
         :root {
-            --bg-color: #e0f2fe;       /* خلفية لبني فاتح ومبهجة */
+            --bg-color: #e0f2fe;
             --card-bg: #ffffff;
-            --primary: #c026d3;        /* بنفسجي وردي مشرق */
-            --secondary: #f43f5e;      /* وردي زاهي */
-            --word-bg: #fce7f3;        /* خلفية وردية فاتحة لأزرار الكلمات */
-            --word-text: #831843;      /* نص عنابي داكن لضمان وضوح تام فوق الخلفية الفاتحة */
-            --answer-bg: #f3e8ff;      /* خلفية بنفسجية فاتحة للكلمات المختارة */
-            --answer-text: #581c87;    /* نص بنفسجي داكن واضح */
+            --primary: #c026d3;
+            --secondary: #f43f5e;
+            --word-bg: #fce7f3;
+            --word-text: #831843;
+            --answer-bg: #f3e8ff;
+            --answer-text: #581c87;
             --success: #10b981;
             --error: #f43f5e;
         }
@@ -27,7 +28,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* السماح بالسكرول على الهاتف فقط */
         body {
             margin: 0;
             font-family: 'Cairo', Tahoma, sans-serif;
@@ -41,7 +41,6 @@
             overflow-y: auto;
         }
 
-        /* بطاقة اللعبة بتصميم 2D عصري ومبتكر */
         .game-container {
             width: 100%;
             max-width: 920px;
@@ -55,7 +54,6 @@
             gap: 16px;
         }
 
-        /* منطقة اللعب الأساسية */
         .main-stage {
             display: flex;
             flex-direction: column;
@@ -63,7 +61,6 @@
             align-items: center;
         }
 
-        /* إطار الصورة بتصميم 2D نظيف */
         .picture-wrapper {
             width: 100%;
             max-width: 500px;
@@ -84,7 +81,6 @@
             gap: 4px;
         }
 
-        /* بلاطة الصورة بتصميم 2D مع تأثير تلاشي ناعم */
         .tile {
             position: relative;
             width: 100%;
@@ -114,7 +110,6 @@
             pointer-events: none;
         }
 
-        /* لوحة التفاعل */
         .controls-panel {
             width: 100%;
             display: flex;
@@ -131,7 +126,6 @@
             text-align: center;
         }
 
-        /* منطقة وضع الجملة المرتبة */
         .answer-area {
             width: 100%;
             min-height: 72px;
@@ -153,7 +147,6 @@
             border-style: solid;
         }
 
-        /* الكلمة المختارة داخل الجملة */
         .answer-word {
             background: var(--answer-bg);
             color: var(--answer-text);
@@ -170,7 +163,6 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* أزرار الكلمات المبعثرة بألوان فاتحة مبهجة ونص داكن واضح */
         .words-area {
             display: flex;
             flex-wrap: wrap;
@@ -213,7 +205,6 @@
             box-shadow: none;
         }
 
-        /* اهتزاز خفيف عند الخطأ */
         .shake {
             animation: shakeAnim 0.35s ease-in-out;
         }
@@ -225,7 +216,6 @@
             75% { transform: translateX(-4px); }
         }
 
-        /* الرسالة وزر السؤال التالي */
         .bottom-bar {
             display: flex;
             flex-direction: column;
@@ -261,7 +251,6 @@
             transform: scale(1.04);
         }
 
-        /* تخطيط التابلت واللابتوب (بدون سكرول نهائياً) */
         @media (min-width: 768px) {
             body {
                 height: 100vh;
@@ -299,19 +288,19 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="game-container">
         <div class="main-stage">
-            <!-- إطار الصورة -->
+
             <div class="picture-wrapper">
                 <div class="picture" id="picture"></div>
             </div>
 
-            <!-- منطقة الترتيب والسؤال التالي -->
             <div class="controls-panel">
                 <h2 class="section-title">رتّبي الجملة:</h2>
-                
+
                 <div class="answer-area" id="answerArea"></div>
 
                 <div class="words-area" id="wordsArea"></div>
@@ -321,11 +310,13 @@
                     <button class="next-btn" id="nextButton" onclick="nextLevel()">السؤال التالي ←</button>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script>
-        /* بيانات التحديات والصور (نفس الأسماء والأمثلة) */
+        /* بيانات التحديات والصور */
+
         const levels = [
             {
                 sentence: ["لا", "تقطفي", "الزهور"],
@@ -333,13 +324,202 @@
                 image: "garden.png"
             },
             {
-                sentence: ["لا", "ترمي", "القمامة"],
-                shuffled: ["القمامة", "ترمي", "لا"],
+                sentence: ["لا", "ترمِ", "القمامة"],
+                shuffled: ["القمامة", "ترمِ", "لا"],
                 image: "park.png"
             },
             {
-                sentence: ["لا", "تجري", "في", "الفصل"],
-                shuffled: ["الفصل", "في", "لا", "تجري"],
+                sentence: ["لا", "تركضي", "في", "الفصل"],
+                shuffled: ["الفصل", "في", "لا", "تركضي"],
+                image: "classroom.jpg"
+            }
+        ];
+
+        let currentLevel = 0;
+        let currentStep = 0;
+
+        const picture = document.getElementById("picture");
+        const answerArea = document.getElementById("answerArea");
+        const wordsArea = document.getElementById("wordsArea");
+        const feedback = document.getElementById("feedback");
+        const nextButton = document.getElementById("nextButton");
+
+        /* إعدادات الصوت */
+
+        function playCalmSound(type) {
+            try {
+                if (typeof Tone === 'undefined') return;
+
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+
+                const calmSynth = new Tone.Synth({
+                    oscillator: { type: "sine" },
+                    envelope: {
+                        attack: 0.06,
+                        decay: 0.2,
+                        sustain: 0.05,
+                        release: 0.5
+                    }
+                }).toDestination();
+
+                calmSynth.volume.value = -18;
+
+                if (type === "correct") {
+                    calmSynth.triggerAttackRelease("E4", "16n");
+
+                } else if (type === "win") {
+                    calmSynth.triggerAttackRelease("C4", "16n");
+                    setTimeout(() => calmSynth.triggerAttackRelease("E4", "16n"), 140);
+                    setTimeout(() => calmSynth.triggerAttackRelease("G4", "8n"), 280);
+
+                } else if (type === "wrong") {
+                    calmSynth.volume.value = -22;
+                    calmSynth.triggerAttackRelease("D3", "16n");
+                }
+
+            } catch (e) {
+                // تجاهل أخطاء الصوت لضمان استمرار اللعب
+            }
+        }
+
+        /* بدء التحدي */
+
+        function startLevel() {
+            const data = levels[currentLevel];
+            currentStep = 0;
+
+            answerArea.innerHTML = "";
+            answerArea.classList.remove("complete");
+            wordsArea.innerHTML = "";
+            picture.innerHTML = "";
+
+            feedback.textContent = "اختاري الكلمة الأولى";
+            feedback.style.color = "#475569";
+
+            nextButton.style.display = "none";
+
+            const totalPieces = data.sentence.length;
+
+            picture.style.gridTemplateColumns = `repeat(${totalPieces}, 1fr)`;
+
+            /* إنشاء أجزاء الصورة */
+
+            for (let i = 0; i < totalPieces; i++) {
+                const tile = document.createElement("div");
+                tile.className = "tile";
+                tile.style.backgroundImage = `url("${data.image}")`;
+                tile.style.backgroundSize = `${totalPieces * 100}% 100%`;
+
+                const position = totalPieces === 1 ? 0 : (i / (totalPieces - 1)) * 100;
+
+                tile.style.backgroundPosition = `${position}% center`;
+
+                const cover = document.createElement("div");
+                cover.className = "tile-cover";
+                cover.textContent = "؟";
+
+                tile.appendChild(cover);
+                picture.appendChild(tile);
+            }
+
+            /* عرض أزرار الكلمات المبعثرة */
+
+            data.shuffled.forEach(word => {
+                const button = document.createElement("button");
+                button.className = "word-btn";
+                button.textContent = word;
+
+                button.onclick = function () {
+                    chooseWord(word, button);
+                };
+
+                wordsArea.appendChild(button);
+            });
+        }
+
+        /* اختيار الكلمة والتحقق من صحتها */
+
+        function chooseWord(word, button) {
+            const data = levels[currentLevel];
+
+            if (word === data.sentence[currentStep]) {
+
+                const answerWord = document.createElement("span");
+                answerWord.className = "answer-word";
+                answerWord.textContent = word;
+
+                answerArea.appendChild(answerWord);
+
+                button.disabled = true;
+
+                /* إظهار جزء من الصورة */
+
+                const tiles = picture.querySelectorAll(".tile");
+                tiles[currentStep].classList.add("revealed");
+
+                currentStep++;
+
+                if (currentStep === data.sentence.length) {
+
+                    playCalmSound("win");
+
+                    answerArea.classList.add("complete");
+
+                    feedback.textContent = "أحسنتِ! رتّبتِ الجملة بنجاح";
+                    feedback.style.color = "#059669";
+
+                    nextButton.style.display = "inline-block";
+
+                    nextButton.textContent = (currentLevel === levels.length - 1)
+                        ? "إعادة اللعب 🔄"
+                        : "السؤال التالي ←";
+
+                } else {
+
+                    playCalmSound("correct");
+
+                    feedback.textContent = "أكملي الجملة";
+                    feedback.style.color = "#0284c7";
+                }
+
+            } else {
+
+                playCalmSound("wrong");
+
+                feedback.textContent = "حاولي مرة أخرى";
+                feedback.style.color = "#dc2626";
+
+                button.classList.remove("shake");
+                void button.offsetWidth;
+                button.classList.add("shake");
+            }
+        }
+
+        /* الانتقال للسؤال التالي */
+
+        function nextLevel() {
+            if (currentLevel < levels.length - 1) {
+                currentLevel++;
+            } else {
+                currentLevel = 0;
+            }
+
+            startLevel();
+        }
+
+        /* تشغيل اللعبة */
+
+        window.onload = function () {
+            startLevel();
+        };
+
+    </script>
+
+</body>
+</html>
+"الفصل", "في", "لا", "تجري"],
                 image: "classroom.png"
             }
         ];
